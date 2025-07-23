@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome | Custom PC Builder</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: radial-gradient(ellipse at 70% 30%, #1e2228 60%, #a52e2e 100%);
+      font-family: 'Inter', Arial, sans-serif;
+      margin:0; min-height:100vh; display:flex;align-items:center;justify-content:center;
+    }
+    .welcome-card {
+      background: rgb(255, 255, 255);
+      border-radius: 32px;
+      box-shadow: 0 16px 74px #0000001a;
+      padding: 3.1em 2.3em 2.4em 2.3em;
+      text-align: center;
+      min-width:330px; max-width: 520px;
+      animation: fadeIn .7s;
+    }
+    @keyframes fadeIn {from {opacity:0;} to {opacity:1;}}
+    h1 { color: #000000; font-size:2.25em; font-weight:900; letter-spacing:2.5px; margin-bottom:1.9em;}
+    .platform-row { display:flex; justify-content:center; gap:2em; margin-bottom:2.5em;}
+    .platform-btn {
+      background: #ecf6ff; border-radius:20px; border:none;
+      cursor:pointer; padding:2em 1.4em 1.5em 1.4em; min-width:160px;
+      box-shadow:0 4px 34px #94bfe72e; font-size:1.18em;
+      transition: box-shadow .14s, transform .15s; display: flex; flex-direction: column; align-items: center;
+    }
+    .platform-btn:hover { box-shadow:0 14px 38px #1976d223; transform:translateY(-4px) scale(1.05);}
+    .platform-btn.intel { color:#000000; border:2px solid #bce4fe;}
+    .platform-btn.amd { background:#ffefef; color:#000000; border:2px solid #ffcfd0;}
+    .platform-btn img { width:57px; display:block; margin-bottom:1.3em; }
+    .platform-badge {
+      display:inline-block; font-size:.79em; font-weight:700; padding:.23em 1em; background:#1565c0; color:#fff; border-radius:9px; margin-bottom:0.7em; letter-spacing:.06em;
+    }
+    .platform-btn.amd .platform-badge { background: #b71c1c;}
+    .amount {font-weight:700; color:#0088ff;}
+    .platform-btn.amd .amount { color:#ff0000;}
+    .subtitle { color:#000000; font-size: 1.06em; margin-top:2em; letter-spacing:.04em;}
+    @media(max-width:650px){
+      .platform-row{flex-direction:column; gap:1.6em;}
+      .welcome-card {padding:2em .65em 2em;}
+    }
+  </style>
+</head>
+<body>
+  <div class="welcome-card">
+    <h1>Custom PC Builder</h1>
+    <div class="platform-row">
+      <button class="platform-btn intel" onclick="goToBuild('intel')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Intel_logo_2023.svg/1024px-Intel_logo_2023.svg.png" alt="Intel logo"/>
+        <span style="font-weight:700;">PC Build</span>
+        <span style="font-size:.99em; margin-top:.6em;">From <span class="amount">₹30,000</span></span>
+      </button>
+      <button class="platform-btn amd" onclick="goToBuild('amd')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/AMD_Logo.svg/1024px-AMD_Logo.svg.png" alt="AMD logo"  />
+        <span style="font-weight:700;">PC Build</span>
+        <span style="font-size:.99em; margin-top:.6em;">From <span class="amount">₹30,000</span></span>
+      </button>
+    </div>
+    <div class="subtitle">Your ultimate, compatible PC. Choose your platform to start building!</div>
+  </div>
+  <script>
+    function goToBuild(platform) {
+      localStorage.setItem('selectedPlatform', platform);
+      localStorage.removeItem('customPCBuild');
+      window.location.href = "build.html";
+    }
+  </script>
+</body>
+</html>

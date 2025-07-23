@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Build | Custom PC Builder</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background:linear-gradient(120deg,#eafdff 60%,#dee7fa 100%); margin:0; font-family: 'Inter', Arial, sans-serif;}
+    header { display:flex; align-items:center; gap:1.5em; padding:1.5em 2em 1.2em 2em; background:#fff; box-shadow:0 4px 16px #62b8ea1f;}
+    .back-btn {background:none;border:none;color:#1565c0;font-size:1.18em;font-weight:700;cursor:pointer;}
+    .site-title { font-size:1.20em; font-weight:800; color:#1565c0;}
+    .cart-btn {margin-left:auto;background: #ecf6ff; border:none; border-radius:16px; padding:.41em 1.2em; font-size:1.12em; color:#1e88e5; cursor:pointer; box-shadow:0 3px 10px #b5e7fa44;}
+    .customize-main { max-width:770px;margin:2.7em auto; background:rgba(255,255,255,0.98); border-radius:26px; box-shadow:0 17px 50px #6cb9e73d; padding:2.3em 30px; animation: fadeIn .7s;}
+    @keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
+    .builder-header { display:flex;align-items:center;gap:1.25em; margin-bottom:1.7em;}
+    .chip-img {width:88px;}
+    .platform-label { display:inline-block; font-size:1.07em; font-weight:820; letter-spacing:.08em; border-radius:15px; padding:.23em 1.7em; box-shadow:0 2px 8px #b5e7fa38; color:#fff;}
+    .intel-theme .platform-label {background: #1565c0;}
+    .amd-theme .platform-label {background: #b71c1c;}
+    .build-title {font-size:1.32em;color:#26344a;letter-spacing:.03em;font-weight:800;margin-left:.6em;}
+    .form-grid {display:grid;grid-template-columns:1fr 1fr;gap:1.2em 2.1em;}
+    .form-group { min-width:183px;}
+    label { font-weight:700; color:var(--color);}
+    select {
+      width:96%; font-size:1em; padding:.44em .7em;
+      border-radius:8px; border:1.2px solid #c2d3ec; margin-top:.52em; background:#f9fcfe;
+      box-shadow: 0 2px 7px #c5dbef19 inset; font-family:inherit;
+    }
+    .add-to-cart-btn {
+      margin-top:2.2em; background:var(--color); color:#fff;
+      padding:.95em 0;width:100%;border:none;border-radius:13px;font-size:1.12em;font-weight:800; box-shadow:0 9px 34px #51bffa29; cursor:pointer; letter-spacing:.05em; margin-bottom:.4em; transition: background .16s;
+    }
+    .add-to-cart-btn:hover{ background:var(--color-dark);}
+    .intel-theme { --color:#175cc6; --color-dark: #0a3e83;}
+    .amd-theme { --color:#b71c1c; --color-dark:#7a2222;}
+    @media (max-width:800px){ .customize-main{padding:1.2em .23em;} .form-grid{grid-template-columns:1fr;gap:1em 0;} }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="back-btn" onclick="location.href='welcome.html';">← Home</button>
+    <span class="site-title">PCBuilder</span>
+    <button class="cart-btn" onclick="location.href='cart.html';">🛒 Cart</button>
+  </header>
+  <div class="customize-main">
+    <div class="builder-header">
+      <span class="platform-label" id="platform-label"></span>
+      <h2 class="build-title" id="build-title"></h2>
+    </div>
+    <form id="builder-form">
+      <div class="form-grid">
+        <div class="form-group"><label>Processor</label><select id="processor-select"></select></div>
+        <div class="form-group"><label>Motherboard</label><select id="motherboard-select"></select></div>
+        <div class="form-group"><label>RAM</label><select id="ram-select"></select></div>
+        <div class="form-group"><label>CPU Cooler</label><select id="cooler-select"></select></div>
+        <div class="form-group"><label>GPU</label><select id="gpu-select"></select></div>
+        <div class="form-group"><label>SSD</label><select id="ssd-select"></select></div>
+        <div class="form-group"><label>HDD</label><select id="hdd-select"></select></div>
+        <div class="form-group"><label>PSU</label><select id="psu-select"></select></div>
+        <div class="form-group"><label>Case</label><select id="case-select"></select></div>
+        <div class="form-group"><label>Operating System</label><select id="os-select"></select></div>
+      </div>
+      <button class="add-to-cart-btn" id="add-to-cart-btn" type="submit">Add Build to Cart</button>
+    </form>
+  </div>
+  <script>
+    const cpus = [
+      { label: "Core i5-12400F – ₹12,000", value: "Core i5-12400F – ₹12,000", platform: "intel", socket: "LGA1700", ramType: "DDR4" },
+      { label: "Core i7-12700F – ₹19,500", value: "Core i7-12700F – ₹19,500", platform: "intel", socket: "LGA1700", ramType: "DDR4" },
+      { label: "Ryzen 5 5600 – ₹12,400", value: "Ryzen 5 5600 – ₹12,400", platform: "amd", socket: "AM4", ramType: "DDR4" },
+      { label: "Ryzen 5 7600 – ₹22,300", value: "Ryzen 5 7600 – ₹22,300", platform: "amd", socket: "AM5", ramType: "DDR5" }
+    ];
+    const motherboards = [
+      { label: "MSI B660M – ₹10,900", value: "MSI B660M – ₹10,900", platform: "intel", socket: "LGA1700", ramType: "DDR4" },
+      { label: "ASUS Prime B660M – ₹12,500", value: "ASUS Prime B660M – ₹12,500", platform: "intel", socket: "LGA1700", ramType: "DDR4" },
+      { label: "Gigabyte B550 – ₹8,900", value: "Gigabyte B550 – ₹8,900", platform: "amd", socket: "AM4", ramType: "DDR4" },
+      { label: "ASRock B650 – ₹17,600", value: "ASRock B650 – ₹17,600", platform: "amd", socket: "AM5", ramType: "DDR5" }
+    ];
+    const rams = [
+      { label: "16GB DDR4 – ₹3,800", value: "16GB DDR4 – ₹3,800", ramType: "DDR4" },
+      { label: "32GB DDR4 – ₹7,500", value: "32GB DDR4 – ₹7,500", ramType: "DDR4" },
+      { label: "32GB DDR5 – ₹11,500", value: "32GB DDR5 – ₹11,500", ramType: "DDR5" }
+    ];
+    const coolers = [
+      { label: "Deepcool AK400 – ₹2,900", value: "Deepcool AK400 – ₹2,900", platform: "intel" },
+      { label: "Stock Intel Cooler – ₹0", value: "Stock Intel Cooler – ₹0", platform: "intel" },
+      { label: "Stock AMD Wraith Cooler – ₹0", value: "Stock AMD Wraith Cooler – ₹0", platform: "amd" },
+      { label: "Cooler Master Hyper 212 – ₹2,400", value:"Cooler Master Hyper 212 – ₹2,400", platform: "both" }
+    ];
+    const gpus = [
+      { label: "NVIDIA RTX 4060 – ₹32,000", value: "NVIDIA RTX 4060 – ₹32,000" },
+      { label: "AMD RX 7600 – ₹27,900", value: "AMD RX 7600 – ₹27,900" }
+    ];
+    const ssds = [
+      { label: "Samsung 970 EVO 1TB – ₹6,900", value:"Samsung 970 EVO 1TB – ₹6,900" },
+      { label: "WD Blue 500GB – ₹3,900", value:"WD Blue 500GB – ₹3,900" }
+    ];
+    const hdds = [
+      { label: "WD Blue 1TB – ₹3,000", value:"WD Blue 1TB – ₹3,000" },
+      { label: "Seagate Barracuda 2TB – ₹4,200", value:"Seagate Barracuda 2TB – ₹4,200" }
+    ];
+    const psus = [
+      { label: "Corsair CV550 550W – ₹3,700", value:"Corsair CV550 550W – ₹3,700" },
+      { label: "Cooler Master MWE 650W – ₹5,200", value:"Cooler Master MWE 650W – ₹5,200" }
+    ];
+    const cases = [
+      { label:"NZXT H510 – ₹5,600", value:"NZXT H510 – ₹5,600" },
+      { label:"Antec NX292 – ₹3,400", value:"Antec NX292 – ₹3,400" }
+    ];
+    const oss = [
+      { label:"Windows 10 Pro – ₹0", value:"Windows 10 Pro – ₹0" },
+      { label:"Linux Ubuntu 24.04 – ₹0", value:"Linux Ubuntu 24.04 – ₹0" }
+    ];
+
+    function populateSelect(id, array, filterFn) {
+      const sel = document.getElementById(id);
+      sel.innerHTML = "";
+      array.filter(filterFn).forEach(opt => {
+        const option = document.createElement("option");
+        option.value = opt.value;
+        option.textContent = opt.label;
+        sel.appendChild(option);
+      });
+    }
+    function updateMotherboards(platform, cpuSocket, ramType) {
+      populateSelect("motherboard-select", motherboards, mb =>
+        mb.platform === platform && (!cpuSocket || mb.socket === cpuSocket) && (!ramType || mb.ramType === ramType)
+      );
+    }
+    function updateRAMs(ramType) {
+      populateSelect("ram-select", rams, r => !ramType || r.ramType === ramType);
+    }
+    function updateCoolers(platform) {
+      populateSelect("cooler-select", coolers, c => !c.platform || c.platform === "both" || c.platform === platform);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const platform = localStorage.getItem("selectedPlatform") || "intel";
+      const plabel = document.getElementById('platform-label');
+      const title = document.getElementById('build-title');
+      if(platform === "amd") {
+        document.body.classList.add("amd-theme");
+        plabel.textContent = "AMD Build";
+        title.textContent = "Custom PC";
+      } else {
+        document.body.classList.add("intel-theme");
+        plabel.textContent = "Intel Build";
+        title.textContent = "Custom PC";
+      }
+      // CPU
+      populateSelect("processor-select", cpus, c => c.platform === platform);
+      // Motherboard, RAM, Cooler initial
+      const firstCPU = cpus.find(c=>c.platform===platform);
+      let cpuSocket = firstCPU ? firstCPU.socket : "";
+      let cpuRamType = firstCPU ? firstCPU.ramType : "";
+      updateMotherboards(platform, cpuSocket, cpuRamType);
+      updateRAMs(cpuRamType);
+      updateCoolers(platform);
+      populateSelect("gpu-select", gpus, ()=>true);
+      populateSelect("ssd-select", ssds, ()=>true);
+      populateSelect("hdd-select", hdds, ()=>true);
+      populateSelect("psu-select", psus, ()=>true);
+      populateSelect("case-select", cases, ()=>true);
+      populateSelect("os-select", oss, ()=>true);
+
+      document.getElementById('processor-select').addEventListener('change', function() {
+        const cpu = cpus.find(c=>c.value === this.value);
+        const socket = cpu ? cpu.socket : "";
+        const ramType = cpu ? cpu.ramType : "";
+        updateMotherboards(platform, socket, ramType);
+        updateRAMs(ramType);
+        updateCoolers(platform);
+      });
+      document.getElementById('motherboard-select').addEventListener('change', function() {
+        const mb = motherboards.find(mb=>mb.value === this.value);
+        const ramType = mb ? mb.ramType : "";
+        updateRAMs(ramType);
+      });
+    });
+
+    document.getElementById('builder-form').onsubmit = function(e) {
+      e.preventDefault();
+      const build = {
+        processor: document.getElementById('processor-select').value,
+        motherboard: document.getElementById('motherboard-select').value,
+        ram: document.getElementById('ram-select').value,
+        cooler: document.getElementById('cooler-select').value,
+        gpu: document.getElementById('gpu-select').value,
+        ssd: document.getElementById('ssd-select').value,
+        hdd: document.getElementById('hdd-select').value,
+        psu: document.getElementById('psu-select').value,
+        pc_case: document.getElementById('case-select').value,
+        os: document.getElementById('os-select').value,
+        platform: localStorage.getItem('selectedPlatform') || "intel"
+      };
+      localStorage.setItem('customPCBuild', JSON.stringify(build));
+      window.location.href = 'cart.html';
+    };
+  </script>
+</body>
+</html>

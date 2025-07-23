@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Cart | Custom PC Builder</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #fafdfe 60%, #e6eefe 100%);
+      font-family: 'Inter', Arial, sans-serif;
+      margin:0;
+    }
+    .cart-shell {
+      max-width:560px;
+      margin:3.8em auto 0;
+      background:rgba(255,255,255,0.96);
+      border-radius:22px;
+      box-shadow:0 16px 48px #1253b236, 0 1.5px 0 #fff;
+      padding:2.6em 2em 2.15em 2em;
+      overflow:visible;
+    }
+    .cart-title {
+      font-size:1.38em; font-weight:900; display:flex; align-items:center; gap:1.1em; letter-spacing:.03em; margin-bottom:.17em;
+    }
+    .platform-label {
+      display:inline-block;
+      font-size:1em;
+      font-weight:800;
+      letter-spacing:.08em;
+      border-radius:14px;
+      padding:.26em 1.6em;
+      box-shadow:0 2px 8px #b5e7fa35;
+      color:#fff;
+    }
+    .cart-title-main { color:#26344a;}
+    .intel-theme .platform-label { background: #1565c0; }
+    .amd-theme .platform-label { background: #b71c1c; }
+    .build-panel { background: rgba(249,252,255, 0.95); border-radius: 13px; box-shadow: 0 1.5px 8px #1762c212; padding: 1.4em 1.2em; margin-bottom:1.2em; margin-top:.8em; }
+    .build-panel ul { list-style: none; padding: 0; margin: 0; }
+    .build-panel li {
+      display:flex; align-items:center; gap:.8em;
+      padding:.45em 0 .34em 0;
+      border-bottom:1px solid #f1f4fa;
+      font-size:1.07em; color: #26344a; position:relative;
+    }
+    .build-panel li:last-child { border-bottom:none; }
+    .build-panel strong { width:133px; color:#2075e1; font-weight:700;}
+    .amd-theme .build-panel strong { color:#b33b3b;}
+    .build-panel .icon-part { font-size:1.17em; margin-right:.22em; opacity:.82; }
+    .checkout-card { background:linear-gradient(95deg,#fcfdff 80%,#f4f7ff 99%); border-radius:13px; padding:1.3em 1.2em; box-shadow:0 3px 18px #1565c010; margin-top:1.15em; margin-bottom:.8em; display:flex; flex-direction:column; gap:.6em; align-items:flex-start; border:1.5px solid #eaf5ff;}
+    .cod-radio { font-size:1.09em; font-weight:600; color:#1d7ade; background:#ecf6ff; border-radius:11px; padding:.49em .95em; margin-bottom:.85em; letter-spacing:.02em; display:flex;align-items:center;gap:.6em;}
+    .amd-theme .cod-radio { color:#b71c1c; background:#fff1f1;}
+    .checkout-btn { background: #1565c0; color: #fff; font-weight:800; font-size:1.13em; border:none; border-radius:13px; padding:.86em 0; width:100%; margin-top:.5em; box-shadow:0 6px 29px #166dda31; letter-spacing:.04em; cursor:pointer; transition: background .14s;}
+    .checkout-btn:hover { background: #1253b2; }
+    .amd-theme .checkout-btn { background:#b71c1c; }
+    .amd-theme .checkout-btn:hover { background:#7a2222; }
+    .delivery-note { margin-top:1.1em; font-size:1em; color:#14b841; font-weight:700; letter-spacing:.01em; text-align:center;}
+    .action-row {margin-top:2.3em; display:flex; gap:1.4em;}
+    .back-btn {
+      background:#f3f4fa; color:#185ea6; border:none; border-radius:11px;padding:.63em 2.1em; font-size:1.01em; font-weight:700; cursor:pointer; box-shadow:0 1.5px 8px #1762c214; transition:background .11s,color .14s;
+    }
+    .back-btn:hover { background:#dbeeff; color:#0b3a6c;}
+    .confirmation { padding:3.2em .7em 2.1em;text-align:center;animation: fadeIn .73s;}
+    .confirmation h2 { color:#25be69; margin-bottom:.8em;}
+    .confirmation .cart-title { justify-content:center; }
+    .confirmation p { font-size:1.13em; color:#33541a; }
+    @keyframes fadeIn { 0%{opacity:0;transform: translateY(32px);} 100%{ opacity:1; transform: translateY(0);}}
+    .empty-cart {color:#b83535;font-weight:600;padding:2.4em 0;text-align:center;}
+    @media (max-width:639px){
+      .cart-shell {border-radius:0;box-shadow:none;padding:1.2em .5em;}
+      .cart-title{font-size:1.13em;}
+    }
+  </style>
+</head>
+<body>
+  <div class="cart-shell" id="cart-main"></div>
+  <script>
+    const partIcons = {
+      processor: "🖥️", motherboard:"🔧", ram:"💾", cooler:"❄️", gpu:"🎮",
+      ssd:"🗄️", hdd:"💽", psu:"🔌", pc_case:"🏠", os:"💽"
+    };
+    function showConfirmation(platform) {
+      document.getElementById('cart-main').innerHTML = `
+        <div class="confirmation">
+          <div class="cart-title">
+            <span class="platform-label">${platform === "amd" ? "AMD Build" : "Intel Build"}</span>
+            <span class="cart-title-main">Custom PC</span>
+          </div>
+          <h2>Thank you for your order!</h2>
+          <p>
+            Payment method: <b>Cash on Delivery</b><br>
+            <span style='color:#25be69;font-weight:700'>Your custom PC will be delivered in 7 days.</span><br>
+            Our team will contact you soon.
+          </p>
+          <button class="back-btn" onclick="window.location.href='welcome.html';">Back to Home</button>
+        </div>
+      `;
+    }
+    document.addEventListener("DOMContentLoaded",function() {
+      const build = JSON.parse(localStorage.getItem('customPCBuild') || '{}');
+      const platform = (build.platform || localStorage.getItem('selectedPlatform') || "intel");
+      if(platform==='amd') document.body.classList.add('amd-theme');
+      else document.body.classList.add('intel-theme');
+      const main = document.getElementById('cart-main');
+      if(!build.processor) {
+        main.innerHTML = `<div class="empty-cart">No PC build in cart.<br><br><button class="back-btn" onclick="window.location.href='build.html';">Start Building</button></div>`;
+        return;
+      }
+      main.innerHTML = `
+        <div class="cart-title">
+          <span class="platform-label">${platform === "amd" ? "AMD Build" : "Intel Build"}</span>
+          <span class="cart-title-main">Custom PC</span>
+        </div>
+        <div class="build-panel">
+          <ul>
+            <li><span class="icon-part">${partIcons.processor}</span> <strong>Processor:</strong> ${build.processor}</li>
+            <li><span class="icon-part">${partIcons.motherboard}</span> <strong>Motherboard:</strong> ${build.motherboard}</li>
+            <li><span class="icon-part">${partIcons.ram}</span> <strong>RAM:</strong> ${build.ram}</li>
+            <li><span class="icon-part">${partIcons.cooler}</span> <strong>CPU Cooler:</strong> ${build.cooler}</li>
+            <li><span class="icon-part">${partIcons.gpu}</span> <strong>GPU:</strong> ${build.gpu}</li>
+            <li><span class="icon-part">${partIcons.ssd}</span> <strong>SSD:</strong> ${build.ssd}</li>
+            <li><span class="icon-part">${partIcons.hdd}</span> <strong>HDD:</strong> ${build.hdd}</li>
+            <li><span class="icon-part">${partIcons.psu}</span> <strong>PSU:</strong> ${build.psu}</li>
+            <li><span class="icon-part">${partIcons.pc_case}</span> <strong>Case:</strong> ${build.pc_case}</li>
+            <li><span class="icon-part">${partIcons.os}</span> <strong>OS:</strong> ${build.os}</li>
+          </ul>
+        </div>
+        <form id="checkout-form" class="checkout-card">
+          <label class="cod-radio"><input type="radio" checked disabled> Cash On Delivery (COD)</label>
+          <button type="submit" class="checkout-btn">Checkout</button>
+        </form>
+        <div class="delivery-note">🚚 Delivery in <b>7 days</b> after order confirmation!</div>
+        <div class="action-row">
+          <button class="back-btn" onclick="window.location.href='build.html';">Edit Build</button>
+        </div>
+      `;
+      document.getElementById('checkout-form').onsubmit = function(e){
+        e.preventDefault();
+        localStorage.removeItem('customPCBuild');
+        showConfirmation(platform);
+      };
+    });
+  </script>
+</body>
+</html>
